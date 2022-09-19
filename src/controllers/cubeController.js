@@ -1,12 +1,10 @@
 const router = require('express').Router();
-const fs = require('fs/promises')
-const cubes = require('../db.json');
-
+const cubeService = require('../services/cubeService')
 router.get('/create', (req, res) => {
     res.render('create')
 });
 
-router.post('/create', (req, res) => {
+router.post('/create', async (req, res) => {
     const cube = req.body;
 
     //Validate
@@ -14,16 +12,19 @@ router.post('/create', (req, res) => {
         return res.status(400).send('Invalid Request');
     }
     //Save data
-    cubes.push(cube);
-    // JSON.stringify(cubes, '', 4)) = third parameter (4) for tabulation in json
-    fs.writeFile('./src/db.json', JSON.stringify(cubes, '', 4))
-        .then(() => {
-            //Redirect to page
-            res.redirect('/')
-        })
-        .catch(err => {
-            res.status(400).send(err)
-        })
+    try {
+        await cubeService.save(cube);
+
+        res.redirect('/');
+    } catch {
+        res.status(400).send(err);
+    }
+
+});
+
+router.get('/details/:id', (req, res) => {
+    const cube = cubeService.getOne(req.params.id)
+    res.render('details', { cube })
 })
 
 module.exports = router
