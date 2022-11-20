@@ -1,2 +1,2 @@
 # Cubicle-Part1 - Express
-SoftUni JS BeckEnd Cubicle - Workshop
+SoftUni JS Back-End Cubicle - Workshop
